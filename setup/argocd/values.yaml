@@ -66,7 +66,23 @@ server:
       - '*'
       manualSync: true
 
-  additionalApplications: []
+  additionalApplications:
+  - name: support
+    namespace: argocd
+    additionalLabels: {}
+    additionalAnnotations: {}
+    project: support
+    source:
+      repoURL: 'https://github.com/timothymahoney/stormlight.git'
+      targetRevision: master
+      path: deploy/support
+    destination:
+      server: https://kubernetes.default.svc
+      namespace: argocd
+    syncPolicy:
+      automated:
+        prune: true
+        selfHeal: true
 
   extraArgs:
     - --insecure
