@@ -1,0 +1,56 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: vault
+  namespace: argocd
+spec:
+  project: support
+  source:
+    repoURL: https://github.com/hashicorp/vault-helm.git
+    targetRevision: v0.18.0
+    path: /
+    helm:
+      version: v3
+      valueFiles:
+      - values.yaml
+      values: |
+      injector:
+        enabled: false
+      server:
+        ingress:
+          enabled: true
+          labels: {}
+          annotations:
+            kubernetes.io/ingress.class: nginx
+            kubernetes.io/tls-acme: "true"
+          ingressClassName: "nginx"
+          pathType: Prefix
+          activeService: true
+          hosts:
+            - host: vault.mahoney.ltd
+              paths:
+              - /
+          tls:
+            - secretName: vault-tls
+              hosts:
+              - vault.mahoney.ltd
+        dataStorage:
+          enabled: true
+          size: 10Gi
+          mountPath: "/vault/data"
+          storageClass: truthwatcher
+          accessMode: ReadWriteOnce
+          annotations: {}
+      ui:
+        enabled: true
+  destination:
+    server: {{ .Values.kubernetes_api }}
+    namespace: vault
+  syncPolicy:
+    automated: # automated sync by default retries failed attempts 5 times with following delays between attempts ( 5s, 10s, 20s, 40s, 80s ); retry controlled using `retry` field.
+      prune: true # Specifies if resources should be pruned during auto-syncing ( false by default ).
+      selfHeal: true # Specifies if partial app sync should be executed when resources are changed only in target Kubernetes cluster and no git change detected ( false by default ).
+      allowEmpty: false # Allows deleting all application resources during automatic syncing ( false by default ).
+    syncOptions:     # Sync options which modifies sync behavior
+    # - Validate=false # disables resource validation (equivalent to 'kubectl apply --validate=false') ( true by default ).
+    - CreateNamespace=true # Namespace Auto-Creation ensures that namespace specified as the application destination exists in the destination cluster.
