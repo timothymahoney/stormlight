@@ -8,7 +8,6 @@ spec:
   source:
     repoURL: https://github.com/hashicorp/vault-helm.git
     targetRevision: v0.18.0
-    path: /
     helm:
       version: v3
       valueFiles:
