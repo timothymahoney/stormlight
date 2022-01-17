@@ -74,7 +74,7 @@ server:
     project: support
     source:
       repoURL: 'https://github.com/timothymahoney/stormlight.git'
-      targetRevision: master
+      targetRevision: main
       path: deploy/support
     destination:
       server: https://kubernetes.default.svc
