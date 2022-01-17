@@ -1,0 +1,94 @@
+controller:
+  resources:
+    requests:
+      cpu: 1000m
+      memory: 1024Mi
+    limits:
+      cpu: 2000m
+      memory: 2048Mi
+
+repoServer:
+  resources:
+    requests:
+      cpu: 250m
+      memory: 1024Mi
+    limits:
+      cpu: 500m
+      memory: 2048Mi
+dex:
+  enabled: false
+  # extraVolumes:
+  # - name: argocd-okta-certificate
+  #   secret:
+  #     secretName: argocd-okta-secret
+  # extraVolumeMounts:
+  # - name: argocd-okta-certificate
+  #   mountPath: "/etc/argocd-okta-certificate/"
+  #   readOnly: true
+server:
+  # rbacConfig:
+  #   policy.default: role:readonly
+  #   policy.csv: |
+  #     g, argocd-admins, role:admin
+  #     g, argocd-readonly, role:readonly
+  config:
+    url: https://argocd.mahoney.ltd
+    # application.instanceLabelKey: argocd.argoproj.io/instance
+    repositories: |
+      - url: git@github.com:tiomthymahoney/stormlight.git
+
+  additionalProjects:
+  - name: support
+    namespace: argocd
+    additionalLabels: {}
+    additionalAnnotations: {}
+    description: Cluster support deployments
+    sourceRepos:
+    - 'https://github.com/timothymahoney/stormlight.git'
+    - '*'
+    destinations:
+    - namespace: "*"
+      server: https://kubernetes.default.svc
+    clusterResourceWhitelist:
+    - group: '*'
+      kind: '*'
+    namespaceResourceBlacklist: []
+    namespaceResourceWhitelist:
+    - group: '*'
+      kind: '*'
+    orphanedResources: {}
+    roles: []
+    syncWindows: 
+    - kind: allow
+      schedule: '* * * * *'
+      duration: 1h
+      applications:
+      - '*'
+      manualSync: true
+
+  additionalApplications: []
+
+  extraArgs:
+    - --insecure
+
+  resources:
+    requests:
+      cpu: 250m
+      memory: 128Mi
+    limits:
+      cpu: 500m
+      memory: 256Mi
+  ingress:
+    https: true
+    enabled: true
+    hosts:
+    - argocd.mahoney.ltd
+    paths:
+    - /
+    tls:
+    - hosts:
+      - argocd.mahoney.ltd
+      secretName: argocd-tls
+    annotations:
+      kubernetes.io/ingress.class: "nginx"
+      kubernetes.io/tls-acme: "true"

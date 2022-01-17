@@ -1,0 +1,44 @@
+fullnameOverride: ingress-nginx
+controller:
+  kind: DaemonSet
+  livenessProbe:
+    httpGet:
+      # should match container.healthCheckPath
+      path: "/healthz"
+      port: 80
+      scheme: HTTP
+    initialDelaySeconds: 10
+    periodSeconds: 10
+    timeoutSeconds: 1
+    successThreshold: 1
+    failureThreshold: 5
+  readinessProbe:
+    httpGet:
+      # should match container.healthCheckPath
+      path: "/healthz"
+      port: 80
+      scheme: HTTP
+    initialDelaySeconds: 10
+    periodSeconds: 10
+    timeoutSeconds: 1
+    successThreshold: 1
+    failureThreshold: 3
+  hostNetwork: false
+  hostPort:
+    enabled: true
+  service:
+    enabled: true
+    enableHttp: false
+    enableHttps: true
+    type: NodePort
+    nodePorts:
+      https: 32443
+  publishService:
+    enabled: false
+  metrics:
+    enabled: false
+    serviceMonitor:
+      enabled: false
+  config:
+    use-forwarded-headers: "true"
+  extraArgs: {}

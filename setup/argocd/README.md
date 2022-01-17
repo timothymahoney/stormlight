@@ -1,0 +1,1 @@
+helm upgrade --install -n argocd argocd argo/argo-cd -f argocd.yaml
