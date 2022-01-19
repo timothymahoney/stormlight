@@ -65,6 +65,33 @@ server:
       applications:
       - '*'
       manualSync: true
+  - name: applications
+    namespace: argocd
+    additionalLabels: {}
+    additionalAnnotations: {}
+    description: Cluster application deployments
+    sourceRepos:
+    - 'https://github.com/timothymahoney/stormlight.git'
+    - '*'
+    destinations:
+    - namespace: "*"
+      server: https://kubernetes.default.svc
+    clusterResourceWhitelist:
+    - group: '*'
+      kind: '*'
+    namespaceResourceBlacklist: []
+    namespaceResourceWhitelist:
+    - group: '*'
+      kind: '*'
+    orphanedResources: {}
+    roles: []
+    syncWindows: 
+    - kind: allow
+      schedule: '* * * * *'
+      duration: 1h
+      applications:
+      - '*'
+      manualSync: true
 
   additionalApplications:
   - name: support
@@ -83,7 +110,23 @@ server:
       automated:
         prune: true
         selfHeal: true
-
+  - name: applications
+    namespace: argocd
+    additionalLabels: {}
+    additionalAnnotations: {}
+    project: applications
+    source:
+      repoURL: 'https://github.com/timothymahoney/stormlight.git'
+      targetRevision: main
+      path: deploy/applications
+    destination:
+      server: https://kubernetes.default.svc
+      namespace: argocd
+    syncPolicy:
+      automated:
+        prune: true
+        selfHeal: true
+        
   extraArgs:
     - --insecure
 
