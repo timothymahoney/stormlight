@@ -16,6 +16,7 @@ spec:
       values: |
         unregisterRunner: true
         unregisterRunners: true
+        gitlabUrl: https://gitlab.com/
         runners:
           config: |
             [[runners]]
