@@ -13,7 +13,7 @@ spec:
       version: v3
       valueFiles:
       - values.yaml
-      values:
+      values: |
         unregisterRunner: true
         unregisterRunners: true
         runners:
