@@ -6,9 +6,9 @@ metadata:
 spec:
   project: applications
   source:
-    repoURL: https://gitlab.com/gitlab-org/charts/gitlab-runner
-    targetRevision: 0-41-stable
-    path: /
+    repoURL: git@github.com:timothymahoney/stormlight.git
+    targetRevision: main
+    path: charts/gitlab-runner/
     helm:
       version: v3
       valueFiles:
