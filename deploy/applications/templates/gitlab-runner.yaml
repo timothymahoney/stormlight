@@ -6,7 +6,7 @@ metadata:
 spec:
   project: applications
   source:
-    repoURL: https://gitlab.com/gitlab-org/charts/gitlab-runner/
+    repoURL: https://gitlab.com/gitlab-org/charts/gitlab-runner
     targetRevision: 0-41-stable
     path: /
     helm:
