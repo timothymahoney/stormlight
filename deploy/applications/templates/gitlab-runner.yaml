@@ -6,7 +6,7 @@ metadata:
 spec:
   project: applications
   source:
-    repoURL: git@github.com:timothymahoney/stormlight.git
+    repoURL: https://github.com/timothymahoney/stormlight.git
     targetRevision: main
     path: charts/gitlab-runner/
     helm:
