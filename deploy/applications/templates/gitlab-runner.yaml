@@ -27,6 +27,8 @@ spec:
         securityContext:
           fsGroup: 65533
           runAsUser: 100
+        rbac:
+          create: true
 
   destination:
     server: {{ .Values.kubernetes_api }}
