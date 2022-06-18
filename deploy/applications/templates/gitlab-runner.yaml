@@ -29,6 +29,7 @@ spec:
           runAsUser: 100
         rbac:
           create: true
+          clusterWideAccess: true
 
   destination:
     server: {{ .Values.kubernetes_api }}
