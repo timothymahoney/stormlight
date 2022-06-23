@@ -1,0 +1,54 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: docker-registry
+  namespace: argocd
+spec:
+  project: support
+  source:
+    repoURL: https://github.com/timothymahoney/stormlight.git
+    targetRevision: main
+    path: charts/docker-registry/
+    helm:
+      version: v3
+      values: |
+        ingress:
+          enabled: true
+          className: nginx
+          path: /
+          # Used to create an Ingress record.
+          hosts:
+            - registry.mahoney.ltd
+          annotations:
+            # kubernetes.io/ingress.class: nginx
+            kubernetes.io/tls-acme: "true"
+          labels: {}
+          tls:
+            - secretName: registry-tls
+              hosts:
+                - registry.mahoney.ltd
+        persistence:
+          accessMode: 'ReadWriteOnce'
+          enabled: true
+          size: 250Gi
+          storageClass: 'truthwatcher'
+        proxy:
+          enabled: false
+          remoteurl: https://registry-1.docker.io
+          username: ""
+          password: ""
+          # the ref for a secret stored outside of this chart
+          # Keys: proxyUsername, proxyPassword
+          secretRef: "dockerhub-credentials"
+
+  destination:
+    server: "{{ .Values.kubernetes_api }}"
+    namespace: support-docker-registry
+  syncPolicy:
+    automated: # automated sync by default retries failed attempts 5 times with following delays between attempts ( 5s, 10s, 20s, 40s, 80s ); retry controlled using `retry` field.
+      prune: true # Specifies if resources should be pruned during auto-syncing ( false by default ).
+      selfHeal: true # Specifies if partial app sync should be executed when resources are changed only in target Kubernetes cluster and no git change detected ( false by default ).
+      allowEmpty: false # Allows deleting all application resources during automatic syncing ( false by default ).
+    syncOptions:     # Sync options which modifies sync behavior
+    # - Validate=false # disables resource validation (equivalent to 'kubectl apply --validate=false') ( true by default ).
+    - CreateNamespace=true # Namespace Auto-Creation ensures that namespace specified as the application destination exists in the destination cluster.
