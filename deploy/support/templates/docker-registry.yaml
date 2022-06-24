@@ -33,13 +33,8 @@ spec:
           size: 250Gi
           storageClass: 'truthwatcher'
         proxy:
-          enabled: false
+          enabled: true
           remoteurl: https://registry-1.docker.io
-          username: ""
-          password: ""
-          # the ref for a secret stored outside of this chart
-          # Keys: proxyUsername, proxyPassword
-          secretRef: "dockerhub-credentials"
 
   destination:
     server: "{{ .Values.kubernetes_api }}"
