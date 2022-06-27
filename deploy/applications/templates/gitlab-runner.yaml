@@ -21,16 +21,7 @@ spec:
           config: |
             [[runners]]
               [runners.docker]
-                tls_verify = false
-                image = "docker:22.06-rc"
                 privileged = true
-                disable_cache = false
-                volumes = ["/cache"]
-              [runners.kubernetes]
-                namespace = "cicd"
-                image = "ubuntu:20.04"
-              [runners.cache]
-                Insecure = false
 
           secret: gitlab-runner
         securityContext:
