@@ -20,9 +20,18 @@ spec:
         runners:
           config: |
             [[runners]]
+              [runners.docker]
+                tls_verify = false
+                image = "alpine:3.4"
+                privileged = true
+                disable_cache = false
+                volumes = ["/cache"]
               [runners.kubernetes]
                 namespace = "cicd"
                 image = "ubuntu:20.04"
+              [runners.cache]
+                Insecure = false
+
           secret: gitlab-runner
         securityContext:
           fsGroup: 65533
