@@ -22,7 +22,7 @@ spec:
             [[runners]]
               [runners.docker]
                 tls_verify = false
-                image = docker:22.06-rc
+                image = "docker:22.06-rc"
                 privileged = true
                 disable_cache = false
                 volumes = ["/cache"]
