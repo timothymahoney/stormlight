@@ -18,6 +18,7 @@ spec:
         unregisterRunners: true
         gitlabUrl: https://gitlab.com/
         runners:
+          privileged: true
           config: |
             [[runners]]
               [runners.docker]
