@@ -33,7 +33,7 @@ spec:
           size: 250Gi
           storageClass: 'truthwatcher'
         proxy:
-          enabled: true
+          enabled: false
           remoteurl: https://registry-1.docker.io
 
   destination:
