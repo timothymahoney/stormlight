@@ -13,6 +13,11 @@ spec:
       version: v3
       valueFiles:
       - values.yaml
+      values: |
+        dnsHostPort:
+          enabled: true
+          port: 53
+
   destination:
     server: {{ .Values.kubernetes_api }}
     namespace: pihole
