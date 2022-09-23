@@ -20,10 +20,10 @@ spec:
           enabled: false
           port: 53
         
-        webHttp: "50080"
-        webHttps: "50443"
-        hostNetwork: "true"
-        privileged: "true"
+        # webHttp: "50080"
+        # webHttps: "50443"
+        # hostNetwork: "true"
+        # privileged: "true"
         
         serviceDns:
           mixedService: true
