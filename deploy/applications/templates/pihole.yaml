@@ -21,7 +21,6 @@ spec:
           mixedService: true
           type: NodePort
           port: 53
-          nodePort: 53
 
         persistentVolumeClaim:
           enabled: true
