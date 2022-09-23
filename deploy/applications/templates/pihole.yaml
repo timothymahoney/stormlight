@@ -44,6 +44,21 @@ spec:
            - secretName: pihole-tls
              hosts:
                - pihole.mahoney.ltd
+        probes:
+          liveness:
+            enabled: true
+            initialDelaySeconds: 5
+            failureThreshold: 10
+            timeoutSeconds: 5
+            port: http
+            scheme: HTTP
+          readiness:
+            enabled: true
+            initialDelaySeconds: 5
+            failureThreshold: 3
+            timeoutSeconds: 5
+            port: http
+            scheme: HTTP
   destination:
     server: {{ .Values.kubernetes_api }}
     namespace: pihole
