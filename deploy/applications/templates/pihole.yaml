@@ -15,6 +15,7 @@ spec:
       - values.yaml
       values: |
         maxUnavailable: 0
+        virtualHost: pihole.mahoney.ltd
         dnsHostPort:
           enabled: false
           port: 53
