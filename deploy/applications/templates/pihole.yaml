@@ -21,7 +21,7 @@ spec:
           port: 53
         serviceDns:
           mixedService: true
-          type: NodePort
+          type: ClusterIP
           port: 53
 
         persistentVolumeClaim:

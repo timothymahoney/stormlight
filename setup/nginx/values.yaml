@@ -1,4 +1,7 @@
 fullnameOverride: ingress-nginx
+tcp:
+  53: "pihole/pihole-dns:53"
+portNamePrefix: "port"
 controller:
   kind: DaemonSet
   livenessProbe:
@@ -33,6 +36,8 @@ controller:
     type: NodePort
     nodePorts:
       https: 32443
+      tcp:
+        pihole: 53
   publishService:
     enabled: false
   metrics:
