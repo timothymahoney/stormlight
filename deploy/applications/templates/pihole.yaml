@@ -29,6 +29,21 @@ spec:
             - ReadWriteOnce
           size: "500Mi"
           storageClass: "truthwatcher"
+        admin:
+          existingSecret: "pihole-admin"
+          passwordKey: "password"
+        ingress:
+          enabled: true
+          ingressClassName: nginx
+          annotations:
+            kubernetes.io/tls-acme: "true"
+          path: /
+          hosts:
+            - pihole.mahoney.ltd
+          tls:
+           - secretName: pihole-tls
+             hosts:
+               - pihole.mahoney.ltd
   destination:
     server: {{ .Values.kubernetes_api }}
     namespace: pihole
