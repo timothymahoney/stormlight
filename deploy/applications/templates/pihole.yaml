@@ -7,7 +7,7 @@ spec:
   project: applications
   source:
     repoURL: https://github.com/MoJo2600/pihole-kubernetes.git
-    targetRevision: pihole-2.5.4
+    targetRevision: pihole-2.9.3
     path: charts/pihole
     helm:
       version: v3
