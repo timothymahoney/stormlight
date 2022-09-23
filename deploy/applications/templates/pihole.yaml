@@ -15,8 +15,14 @@ spec:
       - values.yaml
       values: |
         dnsHostPort:
-          enabled: true
+          enabled: false
           port: 53
+        serviceDns:
+          mixedService: true
+          type: NodePort
+          port: 53
+          nodePort: 53
+
         persistentVolumeClaim:
           enabled: true
           annotations: {}
