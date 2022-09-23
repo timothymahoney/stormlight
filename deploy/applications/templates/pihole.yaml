@@ -15,7 +15,7 @@ spec:
       - values.yaml
       values: |
         dnsHostPort:
-          enabled: false
+          enabled: true
           port: 53
         persistentVolumeClaim:
           enabled: true
