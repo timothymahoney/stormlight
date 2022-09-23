@@ -17,7 +17,7 @@ spec:
         dnsHostPort:
           enabled: true
           port: 53
-        hostNetwork: "true"
+        hostNetwork: "false"
         persistentVolumeClaim:
           enabled: true
           annotations: {}
