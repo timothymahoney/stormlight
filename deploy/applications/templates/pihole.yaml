@@ -17,7 +17,13 @@ spec:
         dnsHostPort:
           enabled: true
           port: 53
-
+        persistentVolumeClaim:
+          enabled: true
+          annotations: {}
+          accessModes:
+            - ReadWriteOnce
+          size: "500Mi"
+          storageClass: "truthwatcher"
   destination:
     server: {{ .Values.kubernetes_api }}
     namespace: pihole
