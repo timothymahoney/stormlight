@@ -22,8 +22,11 @@ spec:
           config: |
             [[runners]]
               [runners.docker]
+                tls_verify = false
+                image = "docker:24.0.5"
                 privileged = true
-
+                disable_cache = false
+                volumes = ["/cache"]
           secret: gitlab-runner
         securityContext:
           fsGroup: 65533
