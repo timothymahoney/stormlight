@@ -26,7 +26,7 @@ spec:
                 image = "docker:24.0.5"
                 privileged = true
                 disable_cache = false
-                volumes = ["/cache"]
+                volumes = ["/certs/client", "/cache"]
           secret: gitlab-runner
         securityContext:
           fsGroup: 65533
