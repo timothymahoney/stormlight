@@ -21,13 +21,12 @@ spec:
           privileged: true
           config: |
             [[runners]]
-              [runners.kubernetes]
-                image = "ubuntu:20.04"
+              [runners.docker]
+                tls_verify = false
+                image = "registry.mahoney.ltd/opsarray/gitlab-runner:latest"
                 privileged = true
-              [[runners.kubernets.volumes.empty_dir]]
-                name = "docker-certs"
-                mount_path = "/certs/client"
-                medium = "Memory"
+                disable_cache = false
+                volumes = ["/certs/client", "/cache"]
 
           secret: gitlab-runner
         securityContext:
