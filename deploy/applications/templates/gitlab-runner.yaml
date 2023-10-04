@@ -22,7 +22,6 @@ spec:
           config: |
             [[runners]]
               url = "https://gitlab.com/"
-              token = TOKEN
               executor = "docker"
               [runners.docker]
                 tls_verify = true
