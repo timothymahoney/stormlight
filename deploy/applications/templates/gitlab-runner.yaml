@@ -26,7 +26,8 @@ spec:
                 image = "registry.mahoney.ltd/opsarray/gitlab-runner:latest"
                 privileged = true
                 disable_cache = false
-                volumes = ["/certs/client", "/cache"]
+                volumes = ["/cache"]
+                # "/certs/client", 
 
           secret: gitlab-runner
         securityContext:
