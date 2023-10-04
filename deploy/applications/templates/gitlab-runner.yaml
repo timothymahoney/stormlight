@@ -21,12 +21,10 @@ spec:
           privileged: true
           config: |
             [[runners]]
-              url = "https://gitlab.com/"
-              executor = "docker"
-              [runners.docker]
+              [runners.kubernetes]
                 image = "registry.mahoney.ltd/opsarray/gitlab-runner:latest"
                 privileged = true
-              [[runners.docker.volumes.empty_dir]]
+              [[runners.kubernetes.volumes.empty_dir]]
                 name = "docker-certs"
                 mount_path = "/certs/client"
                 medium = "Memory"
