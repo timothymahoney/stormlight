@@ -1,0 +1,1 @@
+helm upgrade --install ingress-nginx -n ingress-nginx --create-namespace -f setup/nginx/values.yaml ingress-nginx/ingress-nginx
