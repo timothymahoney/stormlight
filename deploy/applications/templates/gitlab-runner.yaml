@@ -21,9 +21,12 @@ spec:
           privileged: true
           config: |
             [[runners]]
+              url = "https://gitlab.com/"
+              token = TOKEN
+              executor = "docker"
               [runners.docker]
                 tls_verify = true
-                image = "registry.mahoney.ltd/opsarray/gitlab-runner:latest"
+                image = "docker:24.0.5"
                 privileged = true
                 disable_cache = false
                 volumes = ["/certs/client", "/cache"]
