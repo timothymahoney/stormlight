@@ -24,12 +24,15 @@ spec:
               url = "https://gitlab.com/"
               executor = "docker"
               [runners.docker]
-                tls_verify = true
+                # tls_verify = true
                 image = "registry.mahoney.ltd/opsarray/gitlab-runner:latest"
                 privileged = true
-                disable_cache = false
-                volumes = ["/certs/client", "/cache"]
-
+                # disable_cache = false
+                # volumes = ["/certs/client", "/cache"]
+              [[runners.docker.volumes.empty_dir]]
+                name = "docker-certs"
+                mount_path = "/certs/client"
+                medium = "Memory"
           secret: gitlab-runner
         securityContext:
           fsGroup: 65533
