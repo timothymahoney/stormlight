@@ -22,12 +22,11 @@ spec:
           config: |
             [[runners]]
               [runners.docker]
-                tls_verify = false
+                tls_verify = true
                 image = "registry.mahoney.ltd/opsarray/gitlab-runner:latest"
                 privileged = true
                 disable_cache = false
-                volumes = ["/cache"]
-                # "/certs/client", 
+                volumes = ["/certs/client", "/cache"]
 
           secret: gitlab-runner
         securityContext:
