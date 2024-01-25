@@ -45,8 +45,9 @@ spec:
           passwordKey: "password"
         ingress:
           enabled: true
-          ingressClassName: nginx
+          ingressClassName: traefik
           annotations:
+            cert-manager.io/cluster-issuer: letsencrypt-prod
             kubernetes.io/tls-acme: "true"
           path: /
           hosts:
