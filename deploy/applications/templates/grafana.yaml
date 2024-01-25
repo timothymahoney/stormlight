@@ -1,0 +1,40 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: grafana
+  namespace: argocd
+spec:
+  project: applications
+  source:
+    repoURL: https://grafana.github.io/helm-charts
+    targetRevision: grafana-7.2.4
+    path: charts/grafana
+    helm:
+      version: v3
+      values: |
+        nameOverride: grafana
+        fullnameOverride: grafana
+        datasources:
+          datasources.yaml: 
+            apiVersion: 1
+            datasources: []
+            # - name: Prometheus
+            #   type: prometheus
+            #   url: http://prometheus-prometheus.prometheus:9090
+            #   access: proxy
+            #   isDefault: true
+        envFromSecrets:
+        - name: grafana-mysql-database
+          optional: false
+        
+  destination:
+    server: {{ .Values.kubernetes_api }}
+    namespace: grafana
+  syncPolicy:
+    automated: # automated sync by default retries failed attempts 5 times with following delays between attempts ( 5s, 10s, 20s, 40s, 80s ); retry controlled using `retry` field.
+      prune: true # Specifies if resources should be pruned during auto-syncing ( false by default ).
+      selfHeal: true # Specifies if partial app sync should be executed when resources are changed only in target Kubernetes cluster and no git change detected ( false by default ).
+      allowEmpty: false # Allows deleting all application resources during automatic syncing ( false by default ).
+    syncOptions:     # Sync options which modifies sync behavior
+    # - Validate=false # disables resource validation (equivalent to 'kubectl apply --validate=false') ( true by default ).
+    - CreateNamespace=true # Namespace Auto-Creation ensures that namespace specified as the application destination exists in the destination cluster.
