@@ -26,7 +26,9 @@ spec:
         envFromSecrets:
         - name: grafana-mysql-database
           optional: false
-        
+        plugins:
+        - grafana-clock-panel
+
   destination:
     server: {{ .Values.kubernetes_api }}
     namespace: grafana
