@@ -7,7 +7,7 @@ spec:
   project: applications
   source:
     repoURL: https://github.com/grafana/helm-charts.git
-    targetRevision: grafana-7.2.4
+    targetRevision: grafana-7.3.7
     path: charts/grafana
     helm:
       version: v3
@@ -28,6 +28,7 @@ spec:
           optional: false
         plugins:
         - grafana-clock-panel
+
 
   destination:
     server: {{ .Values.kubernetes_api }}
