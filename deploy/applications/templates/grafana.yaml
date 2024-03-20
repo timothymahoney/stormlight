@@ -17,12 +17,12 @@ spec:
         datasources:
           datasources.yaml: 
             apiVersion: 1
-            datasources: []
-            # - name: Prometheus
-            #   type: prometheus
-            #   url: http://prometheus-prometheus.prometheus:9090
-            #   access: proxy
-            #   isDefault: true
+            datasources:
+            - name: Prometheus
+              type: prometheus
+              url: http://prometheus-server.prometheus:80
+              access: proxy
+              isDefault: true
         envFromSecrets:
         - name: grafana-mysql-database
           optional: false
