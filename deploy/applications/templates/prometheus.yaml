@@ -20,6 +20,13 @@ spec:
             enabled: true
             storageClass: "truthwatcher"
             size: 50Gi
+        alertmanager:
+          persistence:
+            enabled: true
+            storageClass: "truthwatcher"
+            accessModes:
+              - ReadWriteOnce
+            size: 50Mi
 
   destination:
     server: {{ .Values.kubernetes_api }}
