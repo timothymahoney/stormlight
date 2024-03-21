@@ -29,6 +29,38 @@ spec:
         plugins:
         - grafana-clock-panel
 
+        dashboardProviders:
+          dashboardproviders.yaml:
+            apiVersion: 1
+            providers:
+            - name: 'grafana-dashboards-kubernetes'
+              orgId: 1
+              folder: 'Kubernetes'
+              type: file
+              disableDeletion: true
+              editable: true
+              options:
+                path: /var/lib/grafana/dashboards/grafana-dashboards-kubernetes
+        dashboards:
+          grafana-dashboards-kubernetes:
+            k8s-system-api-server:
+              url: https://raw.githubusercontent.com/dotdc/grafana-dashboards-kubernetes/master/dashboards/k8s-system-api-server.json
+              token: ''
+            k8s-system-coredns:
+              url: https://raw.githubusercontent.com/dotdc/grafana-dashboards-kubernetes/master/dashboards/k8s-system-coredns.json
+              token: ''
+            k8s-views-global:
+              url: https://raw.githubusercontent.com/dotdc/grafana-dashboards-kubernetes/master/dashboards/k8s-views-global.json
+              token: ''
+            k8s-views-namespaces:
+              url: https://raw.githubusercontent.com/dotdc/grafana-dashboards-kubernetes/master/dashboards/k8s-views-namespaces.json
+              token: ''
+            k8s-views-nodes:
+              url: https://raw.githubusercontent.com/dotdc/grafana-dashboards-kubernetes/master/dashboards/k8s-views-nodes.json
+              token: ''
+            k8s-views-pods:
+              url: https://raw.githubusercontent.com/dotdc/grafana-dashboards-kubernetes/master/dashboards/k8s-views-pods.json
+              token: ''
 
   destination:
     server: {{ .Values.kubernetes_api }}
@@ -40,3 +72,4 @@ spec:
     syncOptions:     # Sync options which modifies sync behavior
     # - Validate=false # disables resource validation (equivalent to 'kubectl apply --validate=false') ( true by default ).
     - CreateNamespace=true # Namespace Auto-Creation ensures that namespace specified as the application destination exists in the destination cluster.
+CWRnOLE8leLht8oux5QXz9jk3pecvqThQsp1QJAE
