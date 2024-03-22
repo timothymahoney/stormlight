@@ -28,7 +28,22 @@ spec:
           optional: false
         plugins:
         - grafana-clock-panel
-
+        ingress:
+          enabled: true
+          ingressClassName: traefik
+          annotations:
+            cert-manager.io/cluster-issuer: "letsencrypt-prod"
+            kubernetes.io/tls-acme: "true"
+          labels: {}
+          path: /
+          pathType: Prefix
+          hosts:
+            - grafana.mahoney.ltd
+          extraPaths: []
+          tls:
+          - secretName: grafana-tls
+            hosts:
+              - grafana.mahoney.ltd
         dashboardProviders:
           dashboardproviders.yaml:
             apiVersion: 1
