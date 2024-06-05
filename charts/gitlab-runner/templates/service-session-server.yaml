@@ -1,9 +1,9 @@
-{{- if and (eq (default 1.0 .Values.replicas) 1.0) .Values.sessionServer .Values.sessionServer.enabled }}
+{{- if eq (include "gitlab-runner.isSessionServerAllowed" . ) "true" }}
 apiVersion: v1
 kind: Service
 metadata:
   name: {{ include "gitlab-runner.fullname" . }}-session-server
-  namespace: {{ default .Release.Namespace .Values.runners.namespace | quote }}
+  namespace: {{ .Release.Namespace | quote }}
   {{- if .Values.sessionServer.annotations }}
   annotations:
     {{- toYaml .Values.sessionServer.annotations | nindent 4 }}

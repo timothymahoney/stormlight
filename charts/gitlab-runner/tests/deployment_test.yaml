@@ -1,0 +1,112 @@
+suite: test deployment
+templates:
+  - deployment.yaml
+  - configmap.yaml
+  - secrets.yaml
+tests:
+  - it: renders runner registration token secret
+    set:
+      image.tag: latest
+      runnerRegistrationToken: "MY_REGISTRATION_TOKEN"
+    template: deployment.yaml
+    asserts:
+      - isKind:
+          of: Deployment
+      - equal:
+          path: spec.template.spec.volumes[2].name
+          value: projected-secrets
+      - equal:
+          path: spec.template.spec.volumes[2].projected.sources[0]
+          value:
+            secret:
+              name: RELEASE-NAME-gitlab-runner
+              items:
+                - key: runner-registration-token
+                  path: runner-registration-token
+                - key: runner-token
+                  path: runner-token
+
+  - it: renders a deployment strategy
+    set:
+      strategy.rollingUpdate.maxSurge: 1
+      strategy.rollingUpdate.maxUnavailable: 0
+      strategy.type: RollingUpdate
+    template: deployment.yaml
+    asserts:
+      - isKind:
+          of: Deployment
+      - equal:
+          path: spec.strategy
+          value:
+            rollingUpdate:
+              maxSurge: 1
+              maxUnavailable: 0
+            type: RollingUpdate
+
+  - it: sets replicas to 0 when explicitly set to 0
+    set:
+      replicas: 0
+    template: deployment.yaml
+    asserts:
+      - isKind:
+          of: Deployment
+      - equal:
+          path: spec.replicas
+          value: 0
+
+  # For apps/v1, a null value for replicas defaults to 1
+  - it: replicas omit from deployment if not set in values
+    set:
+      replicas: null
+    template: deployment.yaml
+    asserts:
+      - isAPIVersion:
+          of: apps/v1
+      - isKind:
+          of: Deployment
+      - notExists:
+          path: spec.replicas
+
+  - it: replicas is set to the configured value
+    set:
+      replicas: 1
+    template: deployment.yaml
+    asserts:
+      - isAPIVersion:
+          of: apps/v1
+      - isKind:
+          of: Deployment
+      - equal:
+          path: spec.replicas
+          value: 1                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     
+  - it: doesn't mount the secret by default
+    template: deployment.yaml
+    asserts:
+      - isKind:
+          of: Deployment
+      - notContains:
+          path: spec.template.spec.volumes
+          content:
+            name: projected-secrets
+          any: true
+
+  - it: mounts the correct secret when secret name is explicitly set
+    set:
+      runners.secret: "{{ .Release.Name }}-secret"
+    template: deployment.yaml
+    asserts:
+      - isKind:
+          of: Deployment
+      - contains:
+          path: spec.template.spec.volumes
+          content:
+            name: projected-secrets
+            projected:
+              sources:
+                - secret:
+                    name: RELEASE-NAME-secret
+                    items:
+                      - key: runner-registration-token
+                        path: runner-registration-token
+                      - key: runner-token
+                        path: runner-token

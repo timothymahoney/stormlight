@@ -31,17 +31,32 @@ Create chart name and version as used by the chart label.
 {{- end -}}
 
 {{/*
+Define the name of the service account
+*/}}
+{{- define "gitlab-runner.serviceAccount" -}}
+{{- if .Values.rbac.create -}}
+{{- default (include "gitlab-runner.fullname" .) .Values.rbac.generatedServiceAccountName | quote -}}
+{{- else -}}
+{{- .Values.rbac.serviceAccountName | quote -}}
+{{- end -}}
+{{- end -}}
+
+{{/*
 Define the name of the secret containing the tokens
 */}}
 {{- define "gitlab-runner.secret" -}}
-{{- default (include "gitlab-runner.fullname" .) .Values.runners.secret | quote -}}
+{{- if .Values.runners.secret -}}
+{{-   tpl .Values.runners.secret $ | quote -}}
+{{- else -}}
+{{-   include "gitlab-runner.fullname" $ -}}
+{{- end -}}
 {{- end -}}
 
 {{/*
 Define the name of the s3 cache secret
 */}}
 {{- define "gitlab-runner.cache.secret" -}}
-{{- if .Values.runners.cache.secretName -}}
+{{- if hasKey .Values.runners.cache "secretName" -}}
 {{- .Values.runners.cache.secretName | quote -}}
 {{- end -}}
 {{- end -}}
@@ -54,24 +69,15 @@ Template for outputing the gitlabUrl
 {{- end -}}
 
 {{/*
-Template runners.cache.s3ServerAddress in order to allow overrides from external charts.
-*/}}
-{{- define "gitlab-runner.cache.s3ServerAddress" }}
-{{- default "" .Values.runners.cache.s3ServerAddress | quote -}}
-{{- end -}}
-
-{{/*
 Define the image, using .Chart.AppVersion and GitLab Runner image as a default value
 */}}
 {{- define "gitlab-runner.image" }}
-{{- if kindIs "string" .Values.image -}}
-{{- .Values.image }}
-{{- else -}}
 {{- $appVersion := ternary "bleeding" (print "v" .Chart.AppVersion) (eq .Chart.AppVersion "bleeding") -}}
 {{- $appVersionImageTag := printf "alpine-%s" $appVersion -}}
+{{- $imageRegistry := ternary "" (print .Values.image.registry "/") (eq .Values.image.registry "") -}}
 {{- $imageTag := default $appVersionImageTag .Values.image.tag -}}
-{{- printf "%s/%s:%s" .Values.image.registry .Values.image.image $imageTag }}
-{{- end -}}
+{{- $imageTpl := printf "%s%s:%s" $imageRegistry .Values.image.image $imageTag -}}
+{{- tpl $imageTpl $ }}
 {{- end -}}
 
 {{/*
@@ -96,19 +102,7 @@ Define the server session external port, using 8093 as a default value
 {{- end -}}
 
 {{/*
-Unregister runner on pod stop
-*/}}
-{{- define "gitlab-runner.unregisterRunner" -}}
-{{- if or (and (hasKey .Values "unregisterRunner") .Values.unregisterRunner) (and (not (hasKey .Values "unregisterRunner")) .Values.runnerRegistrationToken) -}}
-lifecycle:
-  preStop:
-    exec:
-      command: ["/entrypoint", "unregister", "--config=/home/gitlab-runner/.gitlab-runner/config.toml"]
-{{- end -}}
-{{- end -}}
-
-{{/*
-Unregister all runners on pod stop
+Unregister runners on pod stop
 */}}
 {{- define "gitlab-runner.unregisterRunners" -}}
 {{- if or (and (hasKey .Values "unregisterRunners") .Values.unregisterRunners) (and (not (hasKey .Values "unregisterRunners")) .Values.runnerRegistrationToken) -}}
@@ -117,4 +111,29 @@ lifecycle:
     exec:
       command: ["/entrypoint", "unregister", "--all-runners"]
 {{- end -}}
+{{- end -}}
+
+{{/*
+Define if the registration token provided (if any)
+is an authentication token or not
+*/}}
+{{- define "gitlab-runner.isAuthToken" -}}
+{{- $isAuthToken := false -}}
+{{- $hasRegistrationToken := hasKey .Values "runnerRegistrationToken" -}}
+{{- if $hasRegistrationToken -}}
+{{-   $token := .Values.runnerRegistrationToken -}}
+{{-   $isAuthToken = or (empty $token) (hasPrefix "glrt-" $token) -}}
+{{- else -}}
+{{-   $token := default "" .Values.runnerToken -}}
+{{-   $isAuthToken = and (not (empty $token)) (hasPrefix "glrt-" $token) -}}
+{{- end -}}
+{{- $isAuthToken -}}
+{{- end -}}
+
+{{/*
+Define if session server can be enabled by checking
+if the number of replicas is eq to 1
+*/}}
+{{- define "gitlab-runner.isSessionServerAllowed" -}}
+{{- and (eq (default 1 (.Values.replicas | int64)) 1) .Values.sessionServer .Values.sessionServer.enabled -}}
 {{- end -}}

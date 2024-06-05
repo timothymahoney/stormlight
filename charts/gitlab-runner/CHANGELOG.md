@@ -1,3 +1,351 @@
+## v0.65.0 (2024-05-23)
+
+### New features
+
+- Update GitLab Runner version to v17.0.0
+
+### Maintenance
+
+- Default to https in values.yaml !470
+
+### Other changes
+
+- chore: set the checkInterval value the same as in the main documents. !472 (Michel Santello @michel.santello)
+
+## v0.64.1 (2024-05-03)
+
+### New features
+
+- Update GitLab Runner version to v16.11.1
+
+## v0.64.0 (2024-04-18)
+
+### New features
+
+- Update GitLab Runner version to v16.11.0
+- Add support for connection_max_age parameter !468
+- Propagate Service Account Name from values !367 (Martin Odstrčilík @martin.odstrcilik)
+
+### Bug fixes
+
+- Fix liveness probe for Runner Pod !466
+
+## v0.63.0 (2024-03-22)
+
+### New features
+
+- Update GitLab Runner version to v16.10.0
+
+### Bug fixes
+
+- Remove the 'replicas' field from the helm template if not used by user !467 (Alexis Boissiere @alexis974)
+
+## v0.62.1 (2024-03-01)
+
+### New features
+
+- Update GitLab Runner version to v16.9.1
+
+## v0.62.0 (2024-02-15)
+
+### New features
+
+- Update GitLab Runner version to v16.9.0
+- Template the image string to allow using `{{.Chart.AppVersion}}` reference !464 (Marc Bollhalder @NoRelect)
+- Add hostname option !463
+- Fix liveness check for runners with multiple tags !462 (Arran Walker @ajwalker)
+- Add support for extra objects and env vars !451 (Caleb Hansard @caleb.hansard)
+
+### Bug fixes
+
+- Convert Values.replicas from float64 to int64 !465
+- Remove function keyword in register script !461
+- Add and use isSessionServerAllowed helper !459 (Florian Berchtold @florian.berchtold)
+- Remove function keyword in register script !461
+- feat: add tpl in secret helper template !455 (Frederic Mereu @frederic.mereu)
+- Fix non terminating runner in register loop !450
+- fix: immediately use replica value to allow 0 !460 (d3adb5 @d3adb5)
+- Fix non terminating runner in register loop !450
+
+### Maintenance
+
+- Improve wording of comments !439 (Kolja Lucht @k0jak)
+
+## v0.61.2 (2024-02-09)
+
+### New features
+
+- Update GitLab Runner version to v16.8.0
+
+### Bug fixes
+
+- Remove function keyword in register script !461
+
+## v0.61.1 (2024-02-05)
+
+### New features
+
+- Update GitLab Runner version to v16.8.0
+
+### Bug fixes
+
+- Fix non terminating runner in register loop !450
+
+## v0.61.0 (2024-01-19)
+
+### New features
+
+- Update GitLab Runner version to v16.8.0
+
+## v0.60.0 (2023-12-21)
+
+### New features
+
+- Update GitLab Runner version to v16.7.0
+
+### Bug fixes
+
+- Keep tag list for registration token !452
+- Keep tag list for registration token !452
+
+### Other changes
+
+- Allow user-defined deployment strategies for multi-replica deployments !427 (Thomas Spear @tspearconquest)
+
+## v0.59.2 (2023-11-25)
+
+### New features
+
+- Update GitLab Runner version to v16.6.1
+
+## v0.59.1 (2023-11-20)
+
+### Bug fixes
+
+- Keep tag list for registration token !452
+
+## v0.59.0 (2023-11-17)
+
+### New features
+
+- Update GitLab Runner version to v16.6.0
+- Added topologySpreadConstraints value !432 (Kostya Yag @kartograph9)
+
+### Bug fixes
+
+- Fix support for `runnerToken`, and prevent setting deprecated environment variables when using an external secret controller to inject an authentication token instead of passing the value in via helm !429 (Thomas Spear @tspearconquest)
+- Update the default probeTimeoutSeconds to 3 seconds !448
+- Allow overriding image.registry to remove slash !447 (Keith Chason @keith.chason)
+- Update liveness probe to support authentication token !446
+
+### Maintenance
+
+- Make podSecurityContext values propagate correctly !449 (Viktor Lindström Ahlstedt @viktorla)
+
+## v0.58.2 (2023-11-03)
+
+### Bug fixes
+
+- Update the default probeTimeoutSeconds to 3 seconds !448
+
+## v0.58.1 (2023-10-24)
+
+### Bug fixes
+
+- Update liveness probe to support authentication token !446
+
+## v0.58.0 (2023-10-20)
+
+### New features
+
+- Update GitLab Runner version to v16.5.0
+- Add shutdown_timeout flag for global section config !435 (Maxim Tacu @mtacu)
+
+### Bug fixes
+
+- Add missing rbac when debugging services !442 (Ismael Posada Trobo @iposadat)
+- Adjust the runner image to match the configured podSecurityContext !434 (Harald Dunkel @hdunkel)
+- Support for external secrets added via values.yaml envVars value; avoid setting volumes and volume mounts for nonexistent secrets !426 (Thomas Spear @tspearconquest)
+- Make livenessProbe actually probe for a working runner !404 (fiskhest @fiskhest)
+- helm: fix runners.config template rendering !386 (Viktor Oreshkin @stek29)
+
+### Maintenance
+
+- Add ephemeral-storage example in resources.requests and resources.limits !443
+- Update broken and outdated links in Helm chart values.yaml !438 (Kolja Lucht @k0jak)
+
+## v0.57.1 (2023-10-06)
+
+### New features
+
+- Update GitLab Runner version to v16.3.3
+
+## v0.56.2 (2023-10-06)
+
+### New features
+
+- Update GitLab Runner version to v16.3.2
+
+## v0.56.1 (2023-09-18)
+
+### New features
+
+- Update GitLab Runner version to v16.3.1
+
+## v0.56.0 (2023-08-21)
+
+### New features
+
+- Update GitLab Runner version to v16.2.1
+
+## v0.55.0 (2023-07-23)
+
+### New features
+
+- Update GitLab Runner version to v16.1.1
+
+## v0.54.0 (2023-06-21)
+
+### New features
+
+- Update GitLab Runner version to v16.0.3
+
+## v0.53.2 (2023-06-08)
+
+### New features
+
+- Update GitLab Runner version to v16.0.2
+
+### Bug fixes
+
+- Revert cache settings through Kubernetes secret in values yaml !406
+- Take in account registration token from secret !405
+- Support empty rules defined in the values.yaml !402
+
+### Maintenance
+
+- Remove reference to rbac.resources and rbac.verbs !403
+
+## v0.52.1 (2023-06-02)
+
+### New features
+
+- Update GitLab Runner version to v15.11.1
+
+## v0.53.1 (2023-05-25)
+
+### New features
+
+- Update GitLab Runner version to v16.0.1
+
+## v0.53.0 (2023-05-22)
+
+### New features
+
+- Update GitLab Runner version to v16.0.0
+
+### Maintenance
+
+- Adapt the Helm Chart to support the next Token Architecture !398
+- Remove namespace and cache deprecated fields from the Helm Chart project !397
+- Remove all deprecated fields that can be resolved with template merging !393
+- Fix failure in integration tests !390
+
+## v0.52.0 (2023-04-22)
+
+### New features
+
+- Update GitLab Runner version to v15.11.0
+
+### Bug fixes
+
+- Enable ability to use tini instead of dumb-init !385
+- Invalid yaml when creating service account with no annotations !381 (Zev Isert @zevisert)
+
+### Maintenance
+
+- Fix failure in integration tests !390
+- Add merge release config to be executed after stable branches are merged into the main branch !387
+
+## v0.48.0 (2022-12-17)
+
+### New features
+
+- Update GitLab Runner version to 15.7.0
+
+## v0.47.0 (2022-11-22)
+
+### New features
+
+- Update GitLab Runner version to 15.6.0
+
+## v0.46.0 (2022-10-21)
+
+### New features
+
+- Update GitLab Runner version to 15.5.0
+
+## v0.45.0 (2022-09-21)
+
+### New features
+
+- Update GitLab Runner version to 15.4.0
+- Add secrets update permission to RBAC example provided !349 (Tim Hobbs @hobti01)
+
+### Bug fixes
+
+- Revert "Merge branch 'feature/unregister-one-runner' into 'main'" !362
+
+### Maintenance
+
+- Fix the pipeline being blocked by development release !357
+- Docs: Update values.yaml comments to reference kubernetes service accounts docs !310
+
+## v0.44.0 (2022-08-19)
+
+### New features
+
+- Update GitLab Runner version to 15.3.0
+- Add secrets update permission to RBAC example provided !349 (Tim Hobbs @hobti01)
+
+### Maintenance
+
+- Fix the pipeline being blocked by development release !357
+
+### Documentation changes
+
+- Docs: Update values.yaml comments to reference kubernetes service accounts docs !310
+
+## v0.43.0 (2022-07-20)
+
+### New features
+
+- Update GitLab Runner version to 15.2.0
+
+### Documentation changes
+
+- Fix some dead links !356 (Ben Bodenmiller @bbodenmiller)
+
+## v0.42.0 (2022-06-20)
+
+### New features
+
+- Update GitLab Runner version to 15.1.0
+- Add priority classname !350
+- Update namespaces to be consistent across manifests !343 (blacktide @blacktide)
+- Add freely configurable securityContext to deployment !354
+- Add possibility to overwrite default image registry !351 (Patrik Votoček @vrtak-cz)
+- Make session server service annotations configurable !336 (Matthias Baur @m.baur)
+
+### Maintenance
+
+- Add volume and volumeMount support to runner deployment !348
+- ci: Update Helm from 3.4.1 to 3.7.2 !347 (Takuya Noguchi @tnir)
+- Update Docker to 20.10 on integration test !346 (Takuya Noguchi @tnir)
+- Update default registry to GitLab Runner registry !345
+- Update casing of GitLab in values YAML file !344 (Ben Bodenmiller @bbodenmiller)
+- Remove unneeded rbac role !335 (Matthias Baur @m.baur)
+
 ## v0.41.0 (2022-05-19)
 
 ### New features
