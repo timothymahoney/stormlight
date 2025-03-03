@@ -78,7 +78,7 @@ tests:
           of: Deployment
       - equal:
           path: spec.replicas
-          value: 1                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     
+          value: 1
   - it: doesn't mount the secret by default
     template: deployment.yaml
     asserts:
@@ -110,3 +110,178 @@ tests:
                         path: runner-registration-token
                       - key: runner-token
                         path: runner-token
+  - it: render lifecycle options preStop command in the deployment with unregisterRunners disabled
+    set:
+      unregisterRunners: false
+      deploymentLifecycle:
+        preStop:
+          exec:
+            command: ['/bin/sh','-c','echo "got SIGINT signal, waiting for 10 seconds..."; sleep 10; echo "shutting down..."']
+    template: deployment.yaml
+    asserts:
+      - isKind:
+          of: Deployment
+      - equal:
+          path: spec.template.spec.containers[0].lifecycle.preStop.exec.command[0]
+          value: '/bin/sh'
+      - equal:
+          path: spec.template.spec.containers[0].lifecycle.preStop.exec.command[1]
+          value: '-c'
+      - equal:
+          path: spec.template.spec.containers[0].lifecycle.preStop.exec.command[2]
+          value: 'echo "got SIGINT signal, waiting for 10 seconds..."; sleep 10; echo "shutting down..."'
+  - it: render lifecycle options preStop command in the deployment with unregisterRunners enabled
+    set:
+      deploymentLifecycle:
+        preStop:
+          exec:
+            command: ['/bin/sh','-c','echo "got SIGINT signal, waiting for 10 seconds..."; sleep 10; echo "shutting down..."']
+    template: deployment.yaml
+    asserts:
+      - isKind:
+          of: Deployment
+      - equal:
+          path: spec.template.spec.containers[0].lifecycle.preStop.exec.command[0]
+          value: '/bin/sh'
+      - equal:
+          path: spec.template.spec.containers[0].lifecycle.preStop.exec.command[1]
+          value: '-c'
+      - equal:
+          path: spec.template.spec.containers[0].lifecycle.preStop.exec.command[2]
+          value: 'echo "got SIGINT signal, waiting for 10 seconds..."; sleep 10; echo "shutting down..."'
+
+
+  - it: uses custom serviceAccountName
+    set:
+      serviceAccount.name: existing-custom-service-account
+    template: deployment.yaml
+    asserts:
+      - equal:
+          path: spec.template.spec.serviceAccountName
+          value: existing-custom-service-account
+
+  - it: uses probe-level termination grace period if defined
+    set:
+      livenessProbe.terminationGracePeriodSeconds: 30
+    template: deployment.yaml
+    asserts:
+      - equal:
+          path: spec.template.spec.containers[0].livenessProbe.terminationGracePeriodSeconds
+          value: 30
+
+  - it: does not render probe-level termination grace period if not defined
+    template: deployment.yaml
+    asserts:
+      - notExists:
+          path: spec.template.spec.containers[0].livenessProbe.terminationGracePeriodSeconds
+
+  - it: uses custom runtimeClassName
+    set:
+      runtimeClassName: existing-runtime-class
+    template: deployment.yaml
+    asserts:
+      - equal:
+          path: spec.template.spec.runtimeClassName
+          value: existing-runtime-class
+
+  - it: should not set podLabels
+    release:
+      name: hello-gitlab
+    chart:
+      version: 1.0.1
+    template: deployment.yaml
+    asserts:
+      - matchSnapshot:
+          path: spec.template
+      - equal:
+          path: spec.template.metadata.labels
+          value:
+            app: hello-gitlab-gitlab-runner
+            chart: gitlab-runner-1.0.1
+            heritage: Helm
+            release: hello-gitlab
+
+  - it: should set podLabels without template variables
+    set:
+      podLabels:
+        owner.team: my-team
+        gitlab.com: reserved
+    template: deployment.yaml
+    asserts:
+      - equal:
+          path: spec.template.metadata.labels["owner.team"]
+          value: my-team
+      - equal:
+          path: spec.template.metadata.labels["gitlab.com"]
+          value: reserved
+
+  - it: should set podLabels with template variables
+    set:
+      team: gitlab-team
+      tag: finops.io
+      podLabels:
+        owner.team: "{{ .Values.team }}"
+        tags.{{ .Values.tag }}/env: "sandbox"
+        tags.k8s.io/service: gitlab-runner
+    template: deployment.yaml
+    asserts:
+      - equal:
+          path: spec.template.metadata.labels["owner.team"]
+          value: gitlab-team
+      - equal:
+          path: spec.template.metadata.labels["tags.finops.io/env"]
+          value: sandbox
+      - equal:
+          path: spec.template.metadata.labels["tags.k8s.io/service"]
+          value: gitlab-runner
+
+  - it: should not set deploymentLabels
+    release:
+      name: hello-gitlab
+    chart:
+      version: 1.0.1
+    template: deployment.yaml
+    asserts:
+      - matchSnapshot:
+          path: metadata
+      - equal:
+          path: metadata.labels
+          value:
+            app: hello-gitlab-gitlab-runner
+            chart: gitlab-runner-1.0.1
+            heritage: Helm
+            release: hello-gitlab
+
+  - it: should set deploymentLabels without template variables
+    set:
+      deploymentLabels:
+        owner.team: my-team
+        gitlab.com: reserved
+    template: deployment.yaml
+    asserts:
+      - equal:
+          path: metadata.labels["owner.team"]
+          value: my-team
+      - equal:
+          path: metadata.labels["gitlab.com"]
+          value: reserved
+
+  - it: should set deploymentLabels with template variables
+    set:
+      team: gitlab-team
+      tag: finops.io
+      deploymentLabels:
+        owner.team: "{{ .Values.team }}"
+        tags.{{ .Values.tag }}/env: "sandbox"
+        tags.k8s.io/service: gitlab-runner
+    template: deployment.yaml
+    asserts:
+      - equal:
+          path: metadata.labels["owner.team"]
+          value: gitlab-team
+      - equal:
+          path: metadata.labels["tags.finops.io/env"]
+          value: sandbox
+      - equal:
+          path: metadata.labels["tags.k8s.io/service"]
+          value: gitlab-runner

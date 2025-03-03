@@ -31,17 +31,6 @@ Create chart name and version as used by the chart label.
 {{- end -}}
 
 {{/*
-Define the name of the service account
-*/}}
-{{- define "gitlab-runner.serviceAccount" -}}
-{{- if .Values.rbac.create -}}
-{{- default (include "gitlab-runner.fullname" .) .Values.rbac.generatedServiceAccountName | quote -}}
-{{- else -}}
-{{- .Values.rbac.serviceAccountName | quote -}}
-{{- end -}}
-{{- end -}}
-
-{{/*
 Define the name of the secret containing the tokens
 */}}
 {{- define "gitlab-runner.secret" -}}
@@ -66,6 +55,20 @@ Template for outputing the gitlabUrl
 */}}
 {{- define "gitlab-runner.gitlabUrl" -}}
 {{- .Values.gitlabUrl | quote -}}
+{{- end -}}
+
+{{/*
+Define the name of the service account
+*/}}
+# TODO: Remove references to .Values.rbac
+{{- define "gitlab-runner.serviceAccountName" -}}
+{{- if or .Values.serviceAccount.create .Values.serviceAccount.name -}}
+{{- .Values.serviceAccount.name | default (include "gitlab-runner.fullname" .) | quote -}}
+{{- else if .Values.rbac.create -}}
+{{- default (include "gitlab-runner.fullname" .) .Values.rbac.generatedServiceAccountName | quote -}}
+{{- else -}}
+"{{- .Values.rbac.serviceAccountName -}}"
+{{- end -}}
 {{- end -}}
 
 {{/*
@@ -105,7 +108,7 @@ Define the server session external port, using 8093 as a default value
 Unregister runners on pod stop
 */}}
 {{- define "gitlab-runner.unregisterRunners" -}}
-{{- if or (and (hasKey .Values "unregisterRunners") .Values.unregisterRunners) (and (not (hasKey .Values "unregisterRunners")) .Values.runnerRegistrationToken) -}}
+{{- if and (hasKey .Values "unregisterRunners") .Values.unregisterRunners (empty .Values.deploymentLifecycle) -}}
 lifecycle:
   preStop:
     exec:
@@ -114,26 +117,24 @@ lifecycle:
 {{- end -}}
 
 {{/*
-Define if the registration token provided (if any)
-is an authentication token or not
-*/}}
-{{- define "gitlab-runner.isAuthToken" -}}
-{{- $isAuthToken := false -}}
-{{- $hasRegistrationToken := hasKey .Values "runnerRegistrationToken" -}}
-{{- if $hasRegistrationToken -}}
-{{-   $token := .Values.runnerRegistrationToken -}}
-{{-   $isAuthToken = or (empty $token) (hasPrefix "glrt-" $token) -}}
-{{- else -}}
-{{-   $token := default "" .Values.runnerToken -}}
-{{-   $isAuthToken = and (not (empty $token)) (hasPrefix "glrt-" $token) -}}
-{{- end -}}
-{{- $isAuthToken -}}
-{{- end -}}
-
-{{/*
 Define if session server can be enabled by checking
 if the number of replicas is eq to 1
 */}}
 {{- define "gitlab-runner.isSessionServerAllowed" -}}
 {{- and (eq (default 1 (.Values.replicas | int64)) 1) .Values.sessionServer .Values.sessionServer.enabled -}}
+{{- end -}}
+
+{{/*
+Define session server's service name.
+*/}}
+{{- define "gitlab-runner.server-session-service-name" }}
+{{- printf "%s-%s" (include "gitlab-runner.fullname" .) "session-server"}}
+{{- end -}}
+
+{{/*}}
+Define the session server service type.
+It's LoadBalancer by default.
+*/}}
+{{- define "gitlab-runner.server-session-service-type" }}
+{{- default "LoadBalancer" .Values.sessionServer.serviceType}}
 {{- end -}}

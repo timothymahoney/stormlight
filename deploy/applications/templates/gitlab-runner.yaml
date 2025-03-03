@@ -14,7 +14,6 @@ spec:
       valueFiles:
       - values.yaml
       values: |
-        unregisterRunner: true
         unregisterRunners: true
         gitlabUrl: https://gitlab.com/
         runners:
